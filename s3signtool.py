@@ -36,8 +36,7 @@ try:
      if not (ro["url"] and ro["key"] and ro["secret"] and ro["expires"]):
           usage()
           sys.exit(2)
-except getopt.GetoptError as err:
-     print(str(err))
+except:
      usage()
      sys.exit(2)
 
