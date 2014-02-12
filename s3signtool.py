@@ -15,16 +15,17 @@ fullurl = None
 def usage():
      print("")
      print("Required Options:")
-     print("-u / --url:    Url to the resource")
-     print("-k / --key:    AWS Access Key")
-     print("-s / --secret: AWS Secret")
+     print("-u / --url:    <Url to the resource>")
+     print("-k / --key:    <AWS Access Key>")
+     print("-s / --secret: <AWS Secret>")
+     print("-e / --expires: <Unix Timestamp>")
      print("")
      print("Example: 'signtool.py --url https://s3-us-west-2.amazonaws.com/s3bucket/s3file.ext --key AKAIFDSSHEIEFKLSJFEEXAMPLEKEY --secret AWSSECRET'")
      print("Result:  ''")
 
 
 try:
-     opts, args = getopt.getopt(sys.argv[1:], "u:k:s:t:", ["url=", "key=", "secret=", "timestamp="])
+     opts, args = getopt.getopt(sys.argv[1:], "u:k:s:e:", ["url=", "key=", "secret=", "expires="])
      
      # Check for required params
      ro = { "url": False, "key": False, "secret": False, "expires": False } 
@@ -32,11 +33,13 @@ try:
           if (o == '-u' or o == '--url'):       ro["url"] = True
           if (o == '-k' or o == '--key'):       ro["key"] = True
           if (o == '-s' or o == '--secret'):    ro["secret"] = True
-          if (o == '-t' or o == '--timestamp'): ro["expires"] = True
+          if (o == '-e' or o == '--expires'):   ro["expires"] = True
      if not (ro["url"] and ro["key"] and ro["secret"] and ro["expires"]):
           usage()
           sys.exit(2)
-except:
+          
+except getopt.GetoptException as err:
+     print(str(err))
      usage()
      sys.exit(2)
 
@@ -56,7 +59,7 @@ for o,a in opts:
           awskey = a
      elif o in ["--secret","-s"]:
           secret = a
-     elif o in ["--timestamp","-t"]:
+     elif o in ["--expires","-e"]:
           expires = a
 
 
