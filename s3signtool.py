@@ -84,7 +84,7 @@ if "https" in fullurl:
 else:
      proto = "http://"
 
-	if useFullUrl:
+	 if useFullUrl:
 	   sys.stdout.write(proto + url + path + "?AWSAccessKeyId=" + awskey + "&Expires=" + expires + "&Signature=" + signature)
-	else:
+	 else:
 		sys.stdout.write(signature)
