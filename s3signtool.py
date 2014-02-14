@@ -10,7 +10,7 @@ url = None
 awskey = None
 secret = None
 expires = None
-fullurl = None
+useFullUrl = False
 
 def usage():
      print("")
@@ -19,13 +19,14 @@ def usage():
      print("-k / --key:    <AWS Access Key>")
      print("-s / --secret: <AWS Secret>")
      print("-e / --expires: <Unix Timestamp>")
+     print("-f / --full: Print full signature (instead of just signature)")
      print("")
      print("Example: 'signtool.py --url https://s3-us-west-2.amazonaws.com/s3bucket/s3file.ext --key AKAIFDSSHEIEFKLSJFEEXAMPLEKEY --secret AWSSECRET'")
      print("Result:  ''")
 
 
 try:
-     opts, args = getopt.getopt(sys.argv[1:], "u:k:s:e:", ["url=", "key=", "secret=", "expires="])
+     opts, args = getopt.getopt(sys.argv[1:], "u:k:s:e:f", ["url=", "key=", "secret=", "expires=", "full"])
      
      # Check for required params
      ro = { "url": False, "key": False, "secret": False, "expires": False } 
@@ -38,12 +39,12 @@ try:
           usage()
           sys.exit(2)
           
-except getopt.GetoptException as err:
+except getopt.GetoptError as err:
      print(str(err))
      usage()
      sys.exit(2)
 
-
+# Load variable from opts
 for o,a in opts:
      if o in ["--url", "-u"]:
           fullurl = a
@@ -61,6 +62,8 @@ for o,a in opts:
           secret = a
      elif o in ["--expires","-e"]:
           expires = a
+     elif o in ["--full","-f"]:
+          useFullUrl = True;
 
 
 stringToSign = "GET\n\n\n%s\n%s" % (expires, path)
@@ -81,4 +84,7 @@ if "https" in fullurl:
 else:
      proto = "http://"
 
-sys.stdout.write(proto + url + path + "?AWSAccessKeyId=" + awskey + "&Expires=" + expires + "&Signature=" + signature)
+	if useFullUrl:
+	   sys.stdout.write(proto + url + path + "?AWSAccessKeyId=" + awskey + "&Expires=" + expires + "&Signature=" + signature)
+	else:
+		sys.stdout.write(signature)
